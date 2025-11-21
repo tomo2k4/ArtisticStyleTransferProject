@@ -24,11 +24,7 @@ git clone https://github.com/username-cua-ban/Artistic-Style-Transfer.git
 cd Artistic-Style-Transfer
 
 Bước 2: Tạo môi trường ảo + cài thư viện
-
-# 3.1 Tạo venv bằng Python 3.11 (nếu máy chưa có Python 3.11 → tải ở dưới)
-py -3.11 -m venv venv
-
-# Nếu máy chỉ có Python 3.12 thì dùng lệnh này cũng được (vẫn chạy tốt):
+# 3.1 Tạo venv bằng Python 
 # python -m venv venv
 
 # 3.2 Kích hoạt venv
