@@ -16,7 +16,7 @@ Dự án Flask + OpenCV chuyển ảnh
 
 ---
 
-### HƯỚNG DẪN CHẠY DỰ ÁN (chỉ 5 bước – 3 phút là xong)
+### HƯỚNG DẪN CHẠY DỰ ÁN
 
 #### Bước 1: Clone dự án
 ```bash
@@ -28,13 +28,14 @@ Bước 2: Tạo môi trường ảo + cài thư viện
 # python -m venv venv
 
 # 3.2 Kích hoạt venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
 source venv/Scripts/activate
 
-# 3.3 Cài đúng phiên bản đã test 100% (không bị lỗi NumPy)
+# 3.3 Cài phiên bản
 pip install --upgrade pip
-pip install flask==3.0.3 opencv-python==4.10.0.84 numpy==1.26.4
+pip install flask opencv-python numpy
 
+#  Kiểm tra (sẽ không lỗi nữa)
+python -c "import cv2, numpy, flask; print('Tất cả import OK → OpenCV', cv2.__version__)"
 
+#Chạy project
+python app.py
