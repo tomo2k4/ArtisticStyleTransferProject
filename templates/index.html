@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artistic Style Transfer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; color: #333; 
+        }
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            padding: 40px 20px; 
+        }
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+        h1 { 
+            font-size: 2.8rem; 
+            color: white; 
+            text-align: center; 
+            flex: 1; 
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
+
+        .upload-box {
+            background: white; border-radius: 20px; padding: 50px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); margin: 40px 0;
+            border: 4px dashed #667eea;
+            transition: all 0.3s;
+        }
+        .upload-box:hover { border-color: #5a67d8; transform: translateY(-5px); }
+        .upload-box input[type="file"] { display: none; }
+        .upload-label {
+            display: block; padding: 20px; background: #f0f2ff; border-radius: 15px;
+            cursor: pointer; font-size: 1.3rem; color: #5a67d8; margin: 20px 0;
+        }
+
+        select, button {
+            padding: 16px 30px; margin: 15px 10px; border-radius: 12px; border: none;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+        }
+        select { background: #f8f9ff; }
+        .btn-create {
+            background: #56ab2f; color: white; font-size: 1.4rem; padding: 18px 50px;
+            box-shadow: 0 10px 25px rgba(86,171,47,0.4);
+        }
+        .btn-create:hover { background: #468a20; transform: translateY(-3px); }
+
+        .result-section { margin-top: 60px; display: none; }
+        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 30px 0; }
+        .result-grid img { width: 100%; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .info { text-align: center; font-size: 1.3rem; margin: 20px 0; color: white; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; }
+        .actions { text-align: center; margin: 30px 0; }
+        .actions a, .actions button {
+            margin: 10px; padding: 14px 30px; border-radius: 12px; text-decoration: none; font-weight: 600;
+        }
+        .btn-download { background: #00d2ff; color: white; }
+        .btn-again { background: #ffa726; color: white; }
+        .btn-new { background: #ff6b6b; color: white; }
+
+        .alert { padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center; font-weight: bold; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Artistic Style Transfer<br></h1>
+        </header>
+
+        
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-box" id="dropZone">
+                <!-- <p style="font-size:1.5rem; color:#667eea;">Kéo thả ảnh vào đây hoặc</p> -->
+                <label class="upload-label" for="fileInput">Chọn ảnh từ máy tính</label>
+                <input type="file" name="file" id="fileInput" accept="image/*">
+                <p id="filePath" style="color:#333; margin-top:10px; font-size:1.1rem;"></p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert {{ 'success' if category == 'success' else 'error' }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <div style="text-align:center;">
+                <select name="effect" required>
+                    <option value="pencil">Pencil Sketch</option>
+                    <option value="cartoon" selected>Cartoon Effect</option>
+                    <option value="watercolor">Watercolor Effect</option>
+                    <option value="webcam_sketch"> Sketch (Stroked Drawing)</option>
+                </select>
+                <br><br>
+                <button type="submit" class="btn-create">TẠO HIỆU ỨNG</button>
+            </div>
+        </form>
+
+        {% if result_image %}
+        <div class="result-section" id="resultSection">
+            <div class="info">
+                Bạn đã chọn: <strong>{{ effect_name|capitalize }}</strong> – 
+                Thời gian xử lý: <span id="processTime">{{ "%.1f"|format(process_time|default(3.8)) }} giây</span>
+            </div>
+
+            <div class="result-grid">
+                <div>
+                    <h3>Ảnh Gốc</h3>
+                    <!-- <img src="/static/uploads/{{ original_name }}" alt="Original"> -->
+                    
+                    <!-- <img src="/static/uploads/{{ original_name }}" alt="Original"> -->
+                     <img src="{{ url_for('static', filename='uploads/' + original_name) }}" alt="Original">
+
+                </div>
+                <div>
+                    <h3>Kết Quả</h3>
+                    <img src="/results/{{ result_image }}" alt="Result">
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="/results/{{ result_image }}" download class="btn-download">TẢI ẢNH KẾT QUẢ</a>
+                <a href="/" class="btn-new">Chọn ảnh mới</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+    // Drag & Drop
+    const dropZone = document.getElementById('dropZone');
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, e => e.preventDefault());
+    });
+    dropZone.addEventListener('drop', e => {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            document.getElementById('fileInput').files = files;
+            document.getElementById('filePath').innerText =
+                "Ảnh đã chọn: " + files[0].name;
+        }
+    });
+
+    // Hiển thị đường dẫn khi chọn ảnh
+    document.getElementById('fileInput').addEventListener('change', function () {
+        let file = this.files[0];
+        let text = file ? "Ảnh đã chọn: " + file.name : "Chưa chọn ảnh nào";
+        document.getElementById('filePath').innerText = text;
+    });
+
+    // Kiểm tra trước khi submit form
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+        let file = document.getElementById('fileInput').files[0];
+        if (!file) {
+            alert("⚠ Bạn chưa chọn ảnh!");
+            e.preventDefault();
+        }
+    });
+
+    // Auto scroll khi có kết quả
+    {% if result_image %}
+    window.onload = function () {
+        const section = document.getElementById('resultSection');
+        if (section) {
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+    {% endif %}
+</script>
+
+</body>
+</html>
