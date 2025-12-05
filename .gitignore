@@ -1,0 +1,40 @@
+# 1. Môi trường ảo Python
+venv/
+env/
+.venv/
+myenv/
+
+# 2. Cache Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# 3. Ảnh upload & kết quả
+static/uploads/
+static/results/
+uploads/
+results/
+
+# 4. Ảnh & video
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.mp4
+
+# 5. Model nặng
+*.pth
+*.pt
+*.h5
+models/
+checkpoints/
+
+# 6. File bí mật
+.env
+
+# 7. IDE & OS
+.vscode/
+.idea/
+.DS_Store
