@@ -15,20 +15,20 @@ git clone https://github.com/username-cua-ban/Artistic-Style-Transfer.git
 cd Artistic-Style-Transfer
 
 
-Bước 2. Chuẩn bị môi trường (Setup Environment)
+    Bước 2. Chuẩn bị môi trường (Setup Environment)
 
     Trước khi chạy dự án, bạn cần cài đặt Python và các thư viện cần thiết. Nếu dự án sử dụng xử lý ảnh, chúng ta sẽ thêm NumPy và OpenCV.
 
-- Cài đặt Python: Tải từ trang chính thức (python.org).
+    - Cài đặt Python: Tải từ trang chính thức (python.org).
 
             python --version
 
-- Tạo môi trường ảo ( Virtual Environment): Để tránh xung đột thư viện.
+    - Tạo môi trường ảo ( Virtual Environment): Để tránh xung đột thư viện.
 
             python -m venv myenv
             source myvenv/Scripts/activate ( áp dụng window )
 
-- Cài đặt Flask và các thư viện liên quan:
+    - Cài đặt Flask và các thư viện liên quan:
             
             pip install flask numpy opencv-python
 
@@ -36,10 +36,13 @@ Bước 2. Chuẩn bị môi trường (Setup Environment)
     * NumPy: Xử lý mảng, ma trận 
     * OpenCV(opencv-python): Để xử lý ảnh thực tế
 
--  Cài đúng phiên bản
+    -  Cài đúng phiên bản
 
             pip install --upgrade pip              
             pip install flask opencv-python numpy
+
+            #  Kiểm tra 
+            python -c "import cv2, numpy, flask; print('Tất cả import OK → OpenCV', cv2.__version__)"
 
 - Chạy dự án FlaskBash
     * Cách 1: nếu file chính tên app.py hoặc main.py
@@ -49,3 +52,7 @@ Bước 2. Chuẩn bị môi trường (Setup Environment)
     * Cách 2: dùng lệnh flask
             
             flask run
+
+
+
+
